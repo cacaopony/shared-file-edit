@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class FileGetController {
+public class GetFileController {
 
     @GetMapping("/get-file")
     public ResponseEntity<String> getFileContent() {
