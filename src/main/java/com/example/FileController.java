@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -17,12 +20,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class FileController {
-
+//	ファイルの中身を取得する
 	@GetMapping("/files/{fileName}")
 	public ResponseEntity<String> getFileContent(@PathVariable String fileName) {
 		try {
 			// クラスパスからリソースを読み込む
-			Resource resource = new ClassPathResource("static/"+fileName);
+			Resource resource = new ClassPathResource("static/" + fileName);
 			Path filePath = resource.getFile().toPath();
 
 			// ファイルの内容を文字列として読み取る
@@ -33,7 +36,7 @@ public class FileController {
 			return new ResponseEntity<>("ファイルの読み込みに失敗しました。", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-
+//	新しくファイルを作成する
 	@PostMapping("/files")
 	public ResponseEntity<String> createFile(@RequestParam("file_name") String fileName) {
 		try {
@@ -63,4 +66,29 @@ public class FileController {
 					.body("An unexpected error occurred: " + e.getMessage());
 		}
 	}
+//	作成済みのファイルを表示
+	@GetMapping("/files/list")
+	public ResponseEntity<?> getFilesList() {
+	    try {
+	        // ディレクトリのパスを取得
+	        String directory = "static";
+	        Path path = new ClassPathResource(directory).getFile().toPath();
+
+	        // ファイルリストを取得し、文字列リストに変換
+	        List<String> fileList;
+	        try (Stream<Path> filePathStream = Files.list(path)) {
+	            fileList = filePathStream
+	                .map(filePath -> filePath.getFileName().toString()) // ファイル名のみ取得
+	                .collect(Collectors.toList());
+	        }
+
+	        // JSON形式でファイルリストを返す
+	        return ResponseEntity.ok(fileList);
+	    } catch (IOException e) {
+	        // エラー時のレスポンス
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                .body("Error retrieving file list: " + e.getMessage());
+	    }
+	}
+
 }
