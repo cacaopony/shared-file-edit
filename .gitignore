@@ -35,3 +35,7 @@ out/
 
 ### VS Code ###
 .vscode/
+
+#出力ファイルを無視
+/logs/
+/src/main/resources/
