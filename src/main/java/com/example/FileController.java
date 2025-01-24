@@ -82,7 +82,7 @@ public class FileController {
 			}
 			Files.delete(path);
 			return ResponseEntity.status(HttpStatus.OK)
-					.body("File already deleted:" + fileName);
+					.body("File successfully deleted:" + fileName);
 		} catch (Exception e) {
 			// その他のエラーをキャッチ
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
